@@ -21,6 +21,11 @@ import static com.generate.config.Config.JAVA_PATH;
 import static com.generate.config.Config.PROJECT_PATH;
 import static com.generate.config.Config.TEMPLATE_FILE_PATH;
 
+/**
+ * 生成代码各层
+ * @author YI
+ * @date 2018-11-15 22:13:01
+ */
 @Bean
 public class GeneratorServiceImpl implements GeneratorService {
 

@@ -9,15 +9,13 @@ layui.use('form', function(){
         $.ajax({
             cache : true,
             type : "POST",
-            dataType: 'json',
             url : "/analysisPerson",
-            data : model,
-            async : false,
+            data : {"model":model},
             error : function() {
                 layer.msg('系统异常');
             },
             success : function(data) {
-                layer.msg(data);
+                layer.msg(data.data);
             }
         });
 

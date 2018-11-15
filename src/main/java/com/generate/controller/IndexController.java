@@ -36,6 +36,10 @@ public class IndexController {
 
         GeneratorModel model = JSONUtil.toBean(list.get(0), GeneratorModel.class);
 
+        generatorService.getModelAndMapper(model);
+        generatorService.getService(model);
+        generatorService.getController(model);
+
 
         return MessageResult.ok(model);
     }
