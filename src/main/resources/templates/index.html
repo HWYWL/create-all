@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>代码生成</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="//cdn.bootcss.com/spectre.css/0.2.11/spectre.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/spectre.css/0.2.11/spectre-icons.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/spectre.css/0.2.11/spectre-exp.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/plugins/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css?v=0.0.1">
+</head>
+<body>
+
+<section class="section section-hero bg-gray">
+    <div class="grid-hero columns container grid-960" style="margin: 0 auto;">
+        <!--<header class="text-center"><h3>Oh-Mybatis</h3></header>-->
+        <div class="column col-10 col-xs-12" style="margin: 0 auto;">
+            <img src="static/img/logo.gif" class="img-responsive center-block" alt="Cinque Terre">
+            <h3 class="text-center">代码生成器</h3>
+
+            <form class="form-horizontal layui-form" action="" id="config-form">
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">数据库连接</label>
+                        <input type="text" name="jdbcUrl" lay-verify="required" placeholder="127.0.0.1" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">数据库端口</label>
+                        <input type="text" name="port" lay-verify="required" placeholder="3306" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">用户名</label>
+                        <input type="text" name="jdbcUserName" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">用户密码</label>
+                        <input type="text" name="jdbcPassWord" placeholder="请输入用户密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">创建者</label>
+                        <input type="text" name="author" lay-verify="required" placeholder="请输入创建者" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">表名</label>
+                        <input type="text" name="tableName" lay-verify="required" placeholder="请输入表名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">生成的Service存放路径</label>
+                        <input type="text" name="packagePathService" lay-verify="required" placeholder="com.exmaple.service" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">生成的Service实现存放路径</label>
+                        <input type="text" name="packagePathServiceImpl" lay-verify="required" placeholder="com.exmaple.service.impl" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">生成的Controller实现存放路径</label>
+                        <input type="text" name="packagePathController" lay-verify="required" placeholder="com.exmaple.controller" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit lay-filter="formGenerator">立即生成</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="static/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="static/js/index.js" charset="utf-8"></script>
+</body>
+</html>
+
