@@ -24,9 +24,19 @@ public class GeneratorModel {
     public String author;
 
     /**
+     * 数据库名
+     */
+    public String databaseName;
+
+    /**
      * 数据库表名
      */
     public String tableName;
+
+    /**
+     * 项目基础包路径
+     */
+    public String basePackagePath;
 
     /**
      * 生成的Service存放路径

@@ -1,4 +1,4 @@
-package com.generate.utils;
+package com.generate.core;
 
 /**
  * 统一返回数据格式

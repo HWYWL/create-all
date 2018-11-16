@@ -1,4 +1,4 @@
-package com.generate.config;
+package com.generate.core;
 
 import tk.mybatis.mapper.common.*;
 import tk.mybatis.mapper.common.special.InsertListMapper;
@@ -15,5 +15,4 @@ public interface GeneralMapper<T> extends
         ConditionMapper<T>,
         IdsMapper<T>,
         InsertListMapper<T> {
-
 }

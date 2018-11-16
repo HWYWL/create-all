@@ -1,7 +1,9 @@
 package com.generate.service.impl;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharUtil;
+import cn.hutool.core.util.StrUtil;
 import com.blade.ioc.annotation.Bean;
-import com.generate.config.Config;
 import com.generate.model.GeneratorModel;
 import com.generate.service.GeneratorService;
 import freemarker.template.TemplateExceptionHandler;
@@ -17,9 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.generate.config.Config.JAVA_PATH;
-import static com.generate.config.Config.PROJECT_PATH;
-import static com.generate.config.Config.TEMPLATE_FILE_PATH;
+import static com.generate.config.Config.*;
 
 /**
  * 生成代码各层
@@ -38,35 +38,35 @@ public class GeneratorServiceImpl implements GeneratorService {
         context.addProperty(PropertyRegistry.CONTEXT_ENDING_DELIMITER, "`");
 
         JDBCConnectionConfiguration jdbcConnectionConfiguration = new JDBCConnectionConfiguration();
-        jdbcConnectionConfiguration.setConnectionURL(model.getJdbcUrl());
+        jdbcConnectionConfiguration.setConnectionURL(getConnectionURL(model));
         jdbcConnectionConfiguration.setUserId(model.getJdbcUserName());
         jdbcConnectionConfiguration.setPassword(model.getJdbcPassWord());
-        jdbcConnectionConfiguration.setDriverClass(Config.JDBC_DIVER_CLASS_NAME);
+        jdbcConnectionConfiguration.setDriverClass(JDBC_DIVER_CLASS_NAME);
         context.setJdbcConnectionConfiguration(jdbcConnectionConfiguration);
 
         PluginConfiguration pluginConfiguration = new PluginConfiguration();
         pluginConfiguration.setConfigurationType("tk.mybatis.mapper.generator.MapperPlugin");
-        pluginConfiguration.addProperty("mappers", Config.MAPPER_INTERFACE_REFERENCE);
+        pluginConfiguration.addProperty("mappers", model.basePackagePath + NEW_CORE_PACKAGE + MAPPER_INTERFACE_REFERENCE);
         context.addPluginConfiguration(pluginConfiguration);
 
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         javaModelGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
-//        javaModelGeneratorConfiguration.setTargetPackage(ProjectConstant.MODEL_PACKAGE);
+        javaModelGeneratorConfiguration.setTargetPackage(getBasicPackage(model, MODEL_PACKAGE));
         context.setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = new SqlMapGeneratorConfiguration();
-//        sqlMapGeneratorConfiguration.setTargetProject(PROJECT_PATH + RESOURCES_PATH);
+        sqlMapGeneratorConfiguration.setTargetProject(PROJECT_PATH + RESOURCES_PATH);
         sqlMapGeneratorConfiguration.setTargetPackage("mybatis/mapper");
         context.setSqlMapGeneratorConfiguration(sqlMapGeneratorConfiguration);
 
         JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();
         javaClientGeneratorConfiguration.setTargetProject(PROJECT_PATH + JAVA_PATH);
-//        javaClientGeneratorConfiguration.setTargetPackage(ProjectConstant.MAPPER_PACKAGE);
+        javaClientGeneratorConfiguration.setTargetPackage(getBasicPackage(model, MAPPER_PACKAGE));
         javaClientGeneratorConfiguration.setConfigurationType("XMLMAPPER");
         context.setJavaClientGeneratorConfiguration(javaClientGeneratorConfiguration);
 
         TableConfiguration tableConfiguration = new TableConfiguration(context);
-        tableConfiguration.setTableName(model.tableName);
+        tableConfiguration.setTableName(model.getTableName());
         tableConfiguration.setGeneratedKey(new GeneratedKey("id", "Mysql", true, null));
         context.addTableConfiguration(tableConfiguration);
 
@@ -96,27 +96,26 @@ public class GeneratorServiceImpl implements GeneratorService {
         try {
             freemarker.template.Configuration cfg = getConfiguration();
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("date", Config.DATE);
+            Map<String, Object> data = new HashMap<>(16);
+            data.put("date", DATE);
             data.put("author", model.getAuthor());
-            String modelNameUpperCamel = tableNameConvertUpperCamel(model.tableName);
+            String modelNameUpperCamel = tableNameConvertUpperCamel(model.getTableName());
             data.put("modelNameUpperCamel", modelNameUpperCamel);
-            data.put("modelNameLowerCamel", tableNameConvertLowerCamel(model.tableName));
+            data.put("modelNameLowerCamel", tableNameConvertLowerCamel(model.getTableName()));
+            data.put("basePackage", model.getBasePackagePath());
 
-            File file = new File(PROJECT_PATH + JAVA_PATH + basePackage(model.getPackagePathService()) + modelNameUpperCamel + "Service.java");
+            File file = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getPackagePathService()) + modelNameUpperCamel + "Service.java");
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            cfg.getTemplate("service.ftl").process(data,
-                    new FileWriter(file));
+            cfg.getTemplate("service.ftl").process(data, new FileWriter(file));
             System.out.println(modelNameUpperCamel + "Service.java 生成成功");
 
-            File file1 = new File(PROJECT_PATH + JAVA_PATH + basePackage(model.getPackagePathServiceImpl()) + modelNameUpperCamel + "ServiceImpl.java");
+            File file1 = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getPackagePathServiceImpl()) + modelNameUpperCamel + "ServiceImpl.java");
             if (!file1.getParentFile().exists()) {
                 file1.getParentFile().mkdirs();
             }
-            cfg.getTemplate("service-impl.ftl").process(data,
-                    new FileWriter(file1));
+            cfg.getTemplate("service-impl.ftl").process(data, new FileWriter(file1));
             System.out.println(modelNameUpperCamel + "ServiceImpl.java 生成成功");
         } catch (Exception e) {
             throw new RuntimeException("生成Service失败", e);
@@ -129,14 +128,15 @@ public class GeneratorServiceImpl implements GeneratorService {
             freemarker.template.Configuration cfg = getConfiguration();
 
             Map<String, Object> data = new HashMap<>(16);
-            data.put("date", Config.DATE);
+            data.put("date", DATE);
             data.put("author", model.getAuthor());
-            data.put("baseRequestMapping", tableNameConvertMappingPath(model.tableName));
-            String modelNameUpperCamel = tableNameConvertUpperCamel(model.tableName);
+            data.put("baseRequestMapping", tableNameConvertMappingPath(model.getTableName()));
+            String modelNameUpperCamel = tableNameConvertUpperCamel(model.getTableName());
             data.put("modelNameUpperCamel", modelNameUpperCamel);
-            data.put("modelNameLowerCamel", tableNameConvertLowerCamel(model.tableName));
+            data.put("modelNameLowerCamel", tableNameConvertLowerCamel(model.getTableName()));
+            data.put("basePackage", model.getBasePackagePath());
 
-            File file = new File(PROJECT_PATH + JAVA_PATH + basePackage(model.getPackagePathController()) + modelNameUpperCamel + "Controller.java");
+            File file = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getPackagePathController()) + modelNameUpperCamel + "Controller.java");
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
@@ -144,15 +144,35 @@ public class GeneratorServiceImpl implements GeneratorService {
             cfg.getTemplate("controller.ftl").process(data, new FileWriter(file));
 
             System.out.println(modelNameUpperCamel + "Controller.java 生成成功");
+
+            // 核心包复制改写操作
+            coreAdapt(model);
         } catch (Exception e) {
             throw new RuntimeException("生成Controller失败", e);
         }
 
     }
 
+    // 核心类库操作
+    private void coreAdapt(GeneratorModel model) {
+        File src = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(CORE_PACKAGE));
+        File dest = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getBasePackagePath()));
+        FileUtil.copy(src, dest, true);
+
+        List<File> files = FileUtil.loopFiles(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getBasePackagePath() + NEW_CORE_PACKAGE));
+
+        files.forEach(file -> {
+            System.out.println("文件名 === " + FileUtil.getName(file));
+            List<String> strings = FileUtil.readUtf8Lines(file);
+            strings.set(0, strings.get(0).replace(CORE_PACKAGE, model.getBasePackagePath() + NEW_CORE_PACKAGE));
+            FileUtil.del(file);
+            FileUtil.appendUtf8Lines(strings, file);
+        });
+    }
+
     private static freemarker.template.Configuration getConfiguration() throws IOException {
-        freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
-        cfg.setDirectoryForTemplateLoading(new File(TEMPLATE_FILE_PATH));
+        freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_28);
+        cfg.setDirectoryForTemplateLoading(FileUtil.file(TEMPLATE_FILE_PATH));
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
         return cfg;
@@ -186,12 +206,41 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     private static String tableNameConvertMappingPath(String tableName) {
-        return "/" + (tableName.contains("_") ? tableName.replaceAll("_", "/") : tableName);
+        return StrUtil.SLASH + (tableName.contains(StrUtil.UNDERLINE) ? tableName.replaceAll(StrUtil.UNDERLINE, StrUtil.SLASH) : tableName);
     }
 
-    private static String basePackage(String packages){
-        packages.replace(".", "\\");
+    private static String getConnectionURL(GeneratorModel model) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("jdbc:mysql://");
+        buffer.append(model.getJdbcUrl());
+        buffer.append(CharUtil.COLON);
+        buffer.append(model.getPort());
+        buffer.append(CharUtil.SLASH);
+        buffer.append(model.getDatabaseName());
+        buffer.append("?serverTimezone=GMT%2B8");
 
-        return packages;
+        return buffer.toString();
+    }
+
+    private static String getBasicPackage(GeneratorModel model, String packagePath) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(model.getBasePackagePath());
+        buffer.append(packagePath);
+
+
+        return buffer.toString();
+    }
+
+    private static String getPackagePath(String path) {
+        StringBuffer buffer = new StringBuffer();
+
+        String replace = path.replace(StrUtil.DOT, StrUtil.BACKSLASH);
+
+        buffer.append(StrUtil.BACKSLASH);
+        buffer.append(replace);
+        buffer.append(StrUtil.BACKSLASH);
+
+
+        return buffer.toString();
     }
 }

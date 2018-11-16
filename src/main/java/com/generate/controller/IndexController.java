@@ -6,7 +6,7 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.generate.model.GeneratorModel;
 import com.generate.service.GeneratorService;
-import com.generate.utils.MessageResult;
+import com.generate.core.MessageResult;
 
 import java.util.List;
 

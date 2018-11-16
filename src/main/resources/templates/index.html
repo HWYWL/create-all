@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <div class="col-5">
                         <label class="form-label">数据库连接</label>
-                        <input type="text" name="jdbcUrl" lay-verify="required" placeholder="jdbc:mysql://localhost:3306/sg" autocomplete="off" class="layui-input">
+                        <input type="text" name="jdbcUrl" lay-verify="required" placeholder="127.0.0.1" autocomplete="off" class="layui-input">
                     </div>
                     <div class="col-1">&nbsp;</div>
                     <div class="col-6">
@@ -61,20 +61,32 @@
 
                 <div class="form-group">
                     <div class="col-5">
+                        <label class="form-label">数据库名</label>
+                        <input type="text" name="databaseName" lay-verify="required" placeholder="请输入数据库名" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">项目基础包路径</label>
+                        <input type="text" name="basePackagePath" lay-verify="required" placeholder="com.yi.project" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-5">
                         <label class="form-label">生成的Service存放路径</label>
-                        <input type="text" name="packagePathService" lay-verify="required" placeholder="com.exmaple.service" autocomplete="off" class="layui-input">
+                        <input type="text" name="packagePathService" lay-verify="required" placeholder="com.yi.project.service" autocomplete="off" class="layui-input">
                     </div>
                     <div class="col-1">&nbsp;</div>
                     <div class="col-6">
                         <label class="form-label">生成的Service实现存放路径</label>
-                        <input type="text" name="packagePathServiceImpl" lay-verify="required" placeholder="com.exmaple.service.impl" autocomplete="off" class="layui-input">
+                        <input type="text" name="packagePathServiceImpl" lay-verify="required" placeholder="com.yi.project.service.impl" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-5">
                         <label class="form-label">生成的Controller实现存放路径</label>
-                        <input type="text" name="packagePathController" lay-verify="required" placeholder="com.exmaple.controller" autocomplete="off" class="layui-input">
+                        <input type="text" name="packagePathController" lay-verify="required" placeholder="com.yi.project.controller" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
