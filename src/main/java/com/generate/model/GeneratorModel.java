@@ -52,4 +52,9 @@ public class GeneratorModel {
      * 生成的Controller实现存放路径
      */
     String packagePathController;
+
+    /**
+     * 下载地址
+     */
+    String downloadPath;
 }

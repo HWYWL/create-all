@@ -3,6 +3,7 @@ package com.generate.service.impl;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 import com.blade.ioc.annotation.Bean;
 import com.generate.model.GeneratorModel;
 import com.generate.service.GeneratorService;
@@ -10,6 +11,8 @@ import freemarker.template.TemplateExceptionHandler;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.generate.config.Config.*;
 
@@ -28,6 +33,7 @@ import static com.generate.config.Config.*;
  */
 @Bean
 public class GeneratorServiceImpl implements GeneratorService {
+    public static final Logger LOGGER = LoggerFactory.getLogger(GeneratorServiceImpl.class);
 
     @Override
     public void getModelAndMapper(GeneratorModel model) {
@@ -176,8 +182,17 @@ public class GeneratorServiceImpl implements GeneratorService {
         // 删除已经复制的文件
         System.gc();
         dest.delete();
+        dest.deleteOnExit();
+
         FileUtil.del(dest);
         FileUtil.del(PROJECT_PATH + RESOURCES_PATH + "\\mybatis");
+
+        File zip = ZipUtil.zip(FileUtil.newFile(CODE_PATH));
+
+        String url = PROJECT_PATH + RESOURCES_PATH + "/static/temp/GenerateCode.zip";
+        FileUtil.move(zip, FileUtil.newFile(url), true);
+
+        model.setDownloadPath("/static/temp/GenerateCode.zip");
     }
 
     private static freemarker.template.Configuration getConfiguration() throws IOException {
