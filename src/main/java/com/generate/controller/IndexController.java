@@ -39,6 +39,8 @@ public class IndexController {
         generatorService.getModelAndMapper(model);
         generatorService.getService(model);
         generatorService.getController(model);
+        // 核心包操作
+        generatorService.coreAdapt(model);
 
 
         return MessageResult.ok(model);

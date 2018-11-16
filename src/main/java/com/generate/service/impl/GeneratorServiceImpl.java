@@ -144,17 +144,18 @@ public class GeneratorServiceImpl implements GeneratorService {
             cfg.getTemplate("controller.ftl").process(data, new FileWriter(file));
 
             System.out.println(modelNameUpperCamel + "Controller.java 生成成功");
-
-            // 核心包复制改写操作
-            coreAdapt(model);
         } catch (Exception e) {
             throw new RuntimeException("生成Controller失败", e);
         }
 
     }
 
-    // 核心类库操作
-    private void coreAdapt(GeneratorModel model) {
+    /**
+     * 核心类库操作
+     * @param model
+     */
+    @Override
+    public void coreAdapt(GeneratorModel model) {
         File src = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(CORE_PACKAGE));
         File dest = FileUtil.file(PROJECT_PATH + JAVA_PATH + getPackagePath(model.getBasePackagePath()));
         FileUtil.copy(src, dest, true);
@@ -168,6 +169,15 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.del(file);
             FileUtil.appendUtf8Lines(strings, file);
         });
+
+        FileUtil.copy(dest, FileUtil.mkParentDirs(CODE_PATH + JAVA_PATH + getPackagePath(model.getBasePackagePath())), true);
+        FileUtil.copy(FileUtil.file(PROJECT_PATH + RESOURCES_PATH + "\\mybatis"), FileUtil.mkParentDirs(CODE_PATH + RESOURCES_PATH), true);
+
+        // 删除已经复制的文件
+        System.gc();
+        dest.delete();
+        FileUtil.del(dest);
+        FileUtil.del(PROJECT_PATH + RESOURCES_PATH + "\\mybatis");
     }
 
     private static freemarker.template.Configuration getConfiguration() throws IOException {

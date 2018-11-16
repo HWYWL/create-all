@@ -1,4 +1,4 @@
-package ${basePackage}.web;
+package ${basePackage}.controller;
 
 import ${basePackage}.core.MessageResult;
 import ${basePackage}.model.${modelNameUpperCamel};

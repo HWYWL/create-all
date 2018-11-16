@@ -25,5 +25,7 @@ public interface GeneratorService {
      * @param model 数据参数
      */
     void getController(GeneratorModel model);
+
+    void coreAdapt(GeneratorModel model);
 }
 

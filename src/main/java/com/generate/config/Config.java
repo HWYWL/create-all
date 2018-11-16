@@ -20,6 +20,11 @@ public class Config {
     public static final String PROJECT_PATH = System.getProperty("user.dir");
 
     /**
+     * 生成的代码在硬盘上的路径
+     */
+    public static final String CODE_PATH = PROJECT_PATH + "\\GenerateCode";
+
+    /**
      * java文件路径
      */
     public static final String JAVA_PATH = "\\src\\main\\java";
