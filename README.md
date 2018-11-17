@@ -2,7 +2,7 @@
 代码生成器，想你所想
 
 ## 简介
-这是一个代码生成器，基于Blade MVC框架编写，可生成dao、service、controller各层的基础框架。
+这是一个代码生成器，基于Blade MVC框架编写，可生成dao、service、controller各层的基础框架,目前生成的代码只支持MySQL。
 
 ### 打包
 ```
