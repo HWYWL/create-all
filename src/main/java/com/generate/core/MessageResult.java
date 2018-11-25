@@ -26,8 +26,8 @@ public class MessageResult<T> {
         return new MessageResult();
     }
 
-    public static MessageResult ok(Object data) {
-        MessageResult result = new MessageResult();
+    public static MessageResult<Object> ok(Object data) {
+        MessageResult<Object> result = new MessageResult<>();
         result.setData(data);
 
         return result;
@@ -37,8 +37,8 @@ public class MessageResult<T> {
         return new MessageResult(-1, msg, 0, null);
     }
 
-    public static MessageResult errorMap(Object data) {
-        return new MessageResult(-1, "ERROR:出错啦，么么哒！！！", 0, data);
+    public static MessageResult<Object> errorMap(Object data) {
+        return new MessageResult<>(-1, "ERROR:出错啦，么么哒！！！", 0, data);
     }
 
     public static MessageResult errorTokenMsg(String msg) {
